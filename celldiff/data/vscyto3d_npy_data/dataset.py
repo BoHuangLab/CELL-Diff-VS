@@ -51,6 +51,7 @@ class VSCyto3DNPYDataset(Dataset):
         
         item = {}
 
+        item['name'] = data_file
         item['phase'], item['nucleus'], item['membrane'] = self.get_img(data)
         
         return item

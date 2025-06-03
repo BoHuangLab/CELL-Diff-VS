@@ -62,11 +62,7 @@ def main(args) -> None:
                 nucleus, 
                 membrane
             )
-            print(embedding.shape)
             all_embeds.append(embedding.detach().cpu().view(1, -1))
-
-        if i > 100:
-            break
 
     all_embeds = torch.cat(all_embeds, dim=0)
 

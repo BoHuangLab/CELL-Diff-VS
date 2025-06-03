@@ -6,3 +6,5 @@ pretrained_models
 /data/
 
 output
+
+*embedding_all.*
