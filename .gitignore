@@ -3,6 +3,6 @@ wandb
 
 pretrained_models
 
-data
+/data/
 
 output

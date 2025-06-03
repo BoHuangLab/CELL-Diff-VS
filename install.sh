@@ -12,3 +12,4 @@ pip install timm
 pip install einops
 pip install diffusers
 pip install 'accelerate>=0.26.0'
+pip install umap

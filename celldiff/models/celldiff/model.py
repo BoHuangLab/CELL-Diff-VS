@@ -228,6 +228,30 @@ class CELLDiffLD3DVSModel(PreTrainedModel):
 
         return nucleus, membrane
 
+    def embed(self, phase, nucleus=None, membrane=None):
+        if nucleus is None:
+            nucleus_latent = torch.randn_like(phase)
+        else:
+            nucleus_latent = self.vae_nucleus.encode(nucleus).sample()
+
+        if membrane is None:
+            membrane_latent = torch.randn_like(phase)
+        else:
+            membrane_latent = self.vae_membrane.encode(membrane).sample()
+
+        if (nucleus is None) or (membrane is None):
+            time = torch.tensor([self.diffusion.num_timesteps - 1] * phase.shape[0], device=phase.device)
+        else:
+            time = torch.tensor([0] * phase.shape[0], device=phase.device)
+
+        model_time = self.diffusion._scale_timesteps(time)        
+
+        source = phase
+        target = torch.cat([nucleus_latent, membrane_latent], dim=1)
+
+        self.net(target, source, model_time)
+
+        return self.net.embed
 
 class UNetViT3D(nn.Module):
 
@@ -348,6 +372,8 @@ class UNetViT3D(nn.Module):
 
         concat_img = self.img_proj_out(concat_img_embeds, time_embeds)
         concat_img = unpatchify(concat_img, self.dims[-1], self.latent_grid_size, self.patch_size)
+
+        self.embed = concat_img
 
         # upsample
         for i_level in reversed(range(len(self.num_res_block))):
