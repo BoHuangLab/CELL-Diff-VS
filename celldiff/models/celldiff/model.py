@@ -230,12 +230,12 @@ class CELLDiffLD3DVSModel(PreTrainedModel):
 
     def embed(self, phase, nucleus=None, membrane=None):
         if nucleus is None:
-            nucleus_latent = torch.randn_like(phase)
+            nucleus_latent = torch.randn(phase.shape[0], self.config.latent_channels, *self.config.model_input_size, device=phase.device)
         else:
             nucleus_latent = self.vae_nucleus.encode(nucleus).sample()
 
         if membrane is None:
-            membrane_latent = torch.randn_like(phase)
+            membrane_latent = torch.randn(phase.shape[0], self.config.latent_channels, *self.config.model_input_size, device=phase.device)
         else:
             membrane_latent = self.vae_membrane.encode(membrane).sample()
 
